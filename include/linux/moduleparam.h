@@ -8,7 +8,7 @@
 
 /* You can override this manually, but generally this should match the
    module name. */
-#if defined(MODULE) && !defined(CONFIG_LAZY_INITCALL)
+#ifdef MODULE
 #define MODULE_PARAM_PREFIX /* empty */
 #define __MODULE_INFO_PREFIX /* empty */
 #else
@@ -282,10 +282,9 @@ struct kparam_array
 #define __moduleparam_const const
 #endif
 
-/* This is the fundamental function for registering boot/module
-   parameters. */
+/* This is the fundamental function for registering boot/module parameters. */
 #define __module_param_call(prefix, name, ops, arg, perm, level, flags)	\
-	/* Default value instead of permissions? */			\
+	static_assert(sizeof(""prefix) - 1 <= MAX_PARAM_PREFIX_LEN);	\
 	static const char __param_str_##name[] = prefix #name;		\
 	static struct kernel_param __moduleparam_const __param_##name	\
 	__used								\
